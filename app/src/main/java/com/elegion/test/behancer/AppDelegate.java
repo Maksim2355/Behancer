@@ -6,10 +6,6 @@ import androidx.room.Room;
 import com.elegion.test.behancer.data.database.BehanceDatabase;
 import com.elegion.test.behancer.data.Storage;
 
-/**
- * Created by Vladislav Falzan.
- */
-
 public class AppDelegate extends Application {
 
     private Storage mStorage;

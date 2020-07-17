@@ -26,7 +26,7 @@ public class AppActivity extends MvpAppCompatActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_swipe_container);
+        setContentView(R.layout.activity_main);
         mSwipeRefreshLayout = findViewById(R.id.refresher);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         navController = Navigation.findNavController(this, R.id.nav_host_fr_container);

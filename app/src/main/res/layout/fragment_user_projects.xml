@@ -14,7 +14,7 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/v_error"
+        layout="@layout/view_error"
         android:visibility="gone" />
 
 </LinearLayout>

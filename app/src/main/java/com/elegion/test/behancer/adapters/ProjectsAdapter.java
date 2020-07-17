@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.holder.ProjectsHolder;
 import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.databinding.ProjectItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Vladislav Falzan.
- */
 
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
@@ -31,8 +29,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
     @Override
     public ProjectsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.li_projects, parent, false);
-        return new ProjectsHolder(view);
+        return new ProjectsHolder(ProjectItemBinding.inflate(inflater, parent, false));
     }
 
     @Override

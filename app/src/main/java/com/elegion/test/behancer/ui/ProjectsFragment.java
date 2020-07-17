@@ -65,7 +65,7 @@ public class ProjectsFragment extends PresenterFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fr_projects, container, false);
+        return inflater.inflate(R.layout.fragment_projects, container, false);
     }
 
     @Override

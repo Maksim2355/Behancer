@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data class="ProjectItemBinding">
+        <variable
+            name="projectsItem"
+            type="com.elegion.test.behancer.view_model.ProjectsItemViewModel" />
+        
+        <variable
+            name="onItemClickListener"
+            type="com.elegion.test.behancer.adapters.ProjectsAdapter.OnItemClickListener" />
+        
+    </data>
 
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:onClick="@{() -> onItemClickListener.onItemClick(projectsItem.username)}"
     android:layout_margin="8dp">
 
     <RelativeLayout
@@ -18,10 +30,12 @@
             android:layout_height="64dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
+            app:imageUrl="@{projectsItem.imageUrl}"
             android:contentDescription="@string/content_description" />
 
         <TextView
             android:id="@+id/tv_name"
+            android:text="@{projectsItem.name}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -33,6 +47,7 @@
 
         <TextView
             android:id="@+id/tv_username"
+            android:text="@{projectsItem.username}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/tv_name"
@@ -41,6 +56,7 @@
 
         <TextView
             android:id="@+id/tv_published"
+            android:text="@{projectsItem.publishedOn}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/tv_username"
@@ -53,7 +69,8 @@
             android:layout_below="@id/image"
             android:layout_marginTop="8dp"
             />
-
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
+
+</layout>
