@@ -1,16 +1,11 @@
 package com.elegion.test.behancer.presenters;
 
-import com.arellomobile.mvp.InjectViewState;
-import com.elegion.test.behancer.common.BasePresenter;
 import com.elegion.test.behancer.data.Storage;
-import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.utils.ApiUtils;
-import com.elegion.test.behancer.views.ProfileView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-@InjectViewState
 public class ProfilePresenter extends BasePresenter<ProfileView> {
 
     private final Storage mStorage;

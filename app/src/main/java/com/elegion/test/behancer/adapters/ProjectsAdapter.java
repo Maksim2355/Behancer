@@ -44,18 +44,12 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
     }
 
     public void addData(List<Project> data, boolean isRefreshed) {
-        if (isRefreshed) {
-            mProjects.clear();
-        }
-
-        // TODO: 09.04.2018 ДЗ обработать кейс с data.size == 0 || data == null
-
+        if (isRefreshed) mProjects.clear();
         mProjects.addAll(data);
         notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-
         void onItemClick(String username);
     }
 }

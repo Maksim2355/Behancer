@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
-import com.elegion.test.behancer.common.PresenterFragment;
+import com.elegion.test.behancer.common.RefreshFragment;
 import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.presenters.ProfilePresenter;
 import com.elegion.test.behancer.utils.DateUtils;
@@ -27,7 +29,7 @@ import com.squareup.picasso.Picasso;
 
 
 
-public class ProfileFragment extends PresenterFragment implements Refreshable, ProfileView {
+public class ProfileFragment extends RefreshFragment {
 
     public static final String USERNAME = "USERNAME";
 
@@ -47,19 +49,12 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
     private User mUser;
 
 
-    @InjectPresenter
-    ProfilePresenter mProfilePresenter;
-
-    @ProvidePresenter
-    ProfilePresenter providePresenter(){ return new ProfilePresenter(mStorage); }
-
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mStorage = context instanceof Storage.StorageOwner ? ((Storage.StorageOwner) context).obtainStorage() : null;
-        mRefreshOwner = context instanceof RefreshOwner ? (RefreshOwner) context : null;
+        if (context instanceof Storage.StorageOwner) {
+            mStorage = ((Storage.StorageOwner) context).obtainStorage();
+        }
     }
 
     @Nullable
@@ -84,71 +79,77 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
     }
 
     @Override
+    protected SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.refresherProfile);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getArguments() != null) {
-            mUsername = getArguments().getString(USERNAME);
-        }
-        if (getActivity() != null) {
-            getActivity().setTitle(mUsername);
-        }
+        if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
+
+        if (getActivity() != null) getActivity().setTitle(mUsername);
+
         mProfileView.setVisibility(View.VISIBLE);
-        onRefreshData();
+        onRefresh();
     }
 
     @Override
-    public void onRefreshData() {
-       mProfilePresenter.getProfile(mUsername);
-    }
+    public void onRefresh() {
 
-
-
-    @Override
-    public void bind(User user) {
-        mErrorView.setVisibility(View.GONE);
-        mProfileView.setVisibility(View.VISIBLE);
-        mUser = user;
-        Picasso.with(getContext())
-                .load(user.getImage().getPhotoUrl())
-                .fit()
-                .into(mProfileImage);
-        mProfileName.setText(user.getDisplayName());
-        mProfileCreatedOn.setText(DateUtils.format(user.getCreatedOn()));
-        mProfileLocation.setText(user.getLocation());
-    }
-
-    @Override
-    public void openUserWorks(String username) {
-        Bundle bundle = new Bundle();
-        bundle.putString("USER", username);
-        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
-    }
-
-    @Override
-    protected ProfilePresenter getPresenter() {
-        return mProfilePresenter;
     }
 
     @Override
     public void onDetach() {
         mStorage = null;
-        mRefreshOwner = null;
         super.onDetach();
     }
 
-    @Override
-    public void showRefresh() {
-        mRefreshOwner.setRefreshState(true);
-    }
 
-    @Override
-    public void hideRefresh() {
-        mRefreshOwner.setRefreshState(false);
-    }
+//    @Override
+//    public void bind(User user) {
+//        mErrorView.setVisibility(View.GONE);
+//        mProfileView.setVisibility(View.VISIBLE);
+//        mUser = user;
+//        Picasso.with(getContext())
+//                .load(user.getImage().getPhotoUrl())
+//                .fit()
+//                .into(mProfileImage);
+//        mProfileName.setText(user.getDisplayName());
+//        mProfileCreatedOn.setText(DateUtils.format(user.getCreatedOn()));
+//        mProfileLocation.setText(user.getLocation());
+//    }
+//
+//
+//
+//    @Override
+//    public void openUserWorks(String username) {
+//        Bundle bundle = new Bundle();
+//        bundle.putString("USER", username);
+//        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
+//    }
+//
+//    @Override
+//    protected ProfilePresenter getPresenter() {
+//        return mProfilePresenter;
+//    }
+//
 
-    @Override
-    public void showError() {
-        mErrorView.setVisibility(View.VISIBLE);
-        mProfileView.setVisibility(View.GONE);
-    }
+//
+//    @Override
+//    public void showRefresh() {
+//        mRefreshOwner.setRefreshState(true);
+//    }
+//
+//    @Override
+//    public void hideRefresh() {
+//        mRefreshOwner.setRefreshState(false);
+//    }
+//
+//    @Override
+//    public void showError() {
+//        mErrorView.setVisibility(View.VISIBLE);
+//        mProfileView.setVisibility(View.GONE);
+//    }
+
 }

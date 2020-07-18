@@ -6,58 +6,43 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.data.model.project.Project;
-import com.elegion.test.behancer.common.PresenterFragment;
-import com.elegion.test.behancer.common.RefreshOwner;
-import com.elegion.test.behancer.common.Refreshable;
+import com.elegion.test.behancer.common.RefreshFragment;
 import com.elegion.test.behancer.data.Storage;
-import com.elegion.test.behancer.presenters.ProjectsPresenter;
-import com.elegion.test.behancer.views.ProjectsView;
-
-import java.util.List;
+import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 
 
+public class ProjectsFragment extends RefreshFragment
+        implements ProjectsAdapter.OnItemClickListener  {
 
-public class ProjectsFragment extends PresenterFragment
-        implements Refreshable, ProjectsView, ProjectsAdapter.OnItemClickListener  {
 
-    private RecyclerView mRecyclerView;
-    private RefreshOwner mRefreshOwner;
-    private View mErrorView;
-    private Storage mStorage;
-    private ProjectsAdapter mProjectsAdapter;
-
+    private ProjectsListViewModel mProjectsListViewModel;
     private RoutingFragment routing;
 
-    @InjectPresenter
-    ProjectsPresenter mPresenter;
+    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = username -> {
+        Bundle bundle = new Bundle();
+        bundle.putString("USERNAME", username);
+        routing.startScreen(R.id.action_projectsFragment_to_profileFragment, bundle);
+    };
 
-    @ProvidePresenter
-    ProjectsPresenter providePresenter() {
-        return new ProjectsPresenter(mStorage);
-    }
 
-    protected ProjectsPresenter getPresenter() {
-        return mPresenter;
-    }
+
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        routing = (RoutingFragment) getActivity();
         if (context instanceof Storage.StorageOwner) {
-            mStorage = ((Storage.StorageOwner) context).obtainStorage();
-        }
-        if (context instanceof RefreshOwner) {
-            mRefreshOwner = ((RefreshOwner) context);
+            Storage storage = ((Storage.StorageOwner) context).obtainStorage();
+            mProjectsListViewModel = new ProjectsListViewModel(storage, mOnItemClickListener);
         }
     }
 
@@ -69,69 +54,27 @@ public class ProjectsFragment extends PresenterFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = view.findViewById(R.id.recycler);
-        mErrorView = view.findViewById(R.id.errorView);
-        routing = (RoutingFragment) getActivity();
+    protected SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.refresherProjects);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            getActivity().setTitle(R.string.projects);
-        }
-        mProjectsAdapter = new ProjectsAdapter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mProjectsAdapter);
+        if (getActivity() != null) { getActivity().setTitle(R.string.projects); }
 
-        onRefreshData();
+        onRefresh();
     }
 
-    @Override
-    public void onDetach() {
-        mStorage = null;
-        mRefreshOwner = null;
-        super.onDetach();
-    }
-
-    @Override
-    public void onRefreshData() {
-        mPresenter.getProjects();
-    }
-
-    @Override
-    public void showRefresh() {
-        mRefreshOwner.setRefreshState(true);
-    }
-
-    @Override
-    public void hideRefresh() {
-        mRefreshOwner.setRefreshState(false);
-    }
-
-    @Override
-    public void showError() {
-        mErrorView.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void openProfileFragment(@NonNull String username) {
-        Bundle bundle = new Bundle();
-        bundle.putString("USERNAME", username);
-        routing.startScreen(R.id.action_projectsFragment_to_profileFragment, bundle);
-    }
-
-    @Override
-    public void showProjects(@NonNull List<Project> projects) {
-        mErrorView.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mProjectsAdapter.addData(projects, true);
-    }
 
     @Override
     public void onItemClick(String username) {
-        mPresenter.openProfileFragment(username);
+
     }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
 }
