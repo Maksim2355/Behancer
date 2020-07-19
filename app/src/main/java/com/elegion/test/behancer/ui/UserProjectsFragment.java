@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -18,13 +19,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.common.RefreshFragment;
 import com.elegion.test.behancer.common.RefreshOwner;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.views.ProjectsView;
 
 
-public class UserProjectsFragment extends RefreshFragment {
+public class UserProjectsFragment extends Fragment {
 
     private static final String USER_TAG = "USER";
     private String mUser;

@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +13,12 @@ import android.view.ViewGroup;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.common.RefreshFragment;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.databinding.ProjectsListBinding;
 import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 
 
-public class ProjectsFragment extends RefreshFragment
-        implements ProjectsAdapter.OnItemClickListener  {
+public class ProjectsFragment extends Fragment {
 
 
     private ProjectsListViewModel mProjectsListViewModel;
@@ -50,31 +47,24 @@ public class ProjectsFragment extends RefreshFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_projects, container, false);
+        ProjectsListBinding binding = ProjectsListBinding.inflate(inflater, container, false);
+        binding.setViewModelProjectsList(mProjectsListViewModel);
+        return binding.getRoot();
     }
 
-    @Override
-    protected SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(R.id.refresherProjects);
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) { getActivity().setTitle(R.string.projects); }
-
-        onRefresh();
+        mProjectsListViewModel.loadProjects();
     }
+
 
 
     @Override
-    public void onItemClick(String username) {
-
+    public void onDetach() {
+        super.onDetach();
+        mProjectsListViewModel.dispatchDetach();
     }
-
-    @Override
-    public void onRefresh() {
-
-    }
-
 }

@@ -3,6 +3,7 @@ package com.elegion.test.behancer.view_model;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableBoolean;
 import androidx.lifecycle.ViewModel;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
@@ -22,6 +23,8 @@ public class ProjectsListViewModel extends ViewModel {
     private ObservableBoolean mIsLoading = new ObservableBoolean(false);
     private ObservableBoolean mIsListVisible = new ObservableBoolean(false);
     private ObservableArrayList<Project> mProjects = new ObservableArrayList<>();
+
+    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = this::loadProjects;
 
 
     private ProjectsAdapter.OnItemClickListener mOnItemClickListener;
@@ -65,6 +68,11 @@ public class ProjectsListViewModel extends ViewModel {
     public ProjectsAdapter.OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
     }
+
+    public SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
+        return mOnRefreshListener;
+    }
+
 
     public void dispatchDetach(){
         mStorage = null;

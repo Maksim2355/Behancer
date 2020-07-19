@@ -1,33 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refresherProfile"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+<layout xmlns:bind="http://schemas.android.com/apk/res-auto"
+         xmlns:app="http://schemas.android.com/tools">
+
+    <data class="ProfileBinding">
+
+        <import type="android.view.View" alias="View"/>
+        <variable
+            name="ViewModelProfile"
+            type="com.elegion.test.behancer.view_model.ProfileViewModel" />
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refresherProfile"
+        bind:refreshState="@{ViewModelProfile.isLoading}"
+        bind:onRefreshListener="@{ViewModelProfile.onRefreshListener}"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="match_parent">
 
-        <include
-            layout="@layout/view_profile"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/view_error"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/goUserProjects_btn"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:layout_margin="8dp"
-            android:textColor="#FFFFFF"
-            android:text="View user projects"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <include
+                layout="@layout/view_profile"
+                app:user="@{ViewModelProfile.user}"
+                android:visibility="@{ViewModelProfile.isListVisible ? View.GONE : View.VISIBLE }"
+                />
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <include
+                layout="@layout/view_error"
+                android:visibility="@{ViewModelProfile.isListVisible ? View.GONE : View.VISIBLE }" />
+
+            <Button
+                android:id="@+id/goUserProjects_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_margin="8dp"
+                android:textColor="#FFFFFF"
+                android:onClick="@{() -> ViewModelProfile.onBtnWorksListClickListener}"
+                android:text="View user projects"/>
+
+        </LinearLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>
