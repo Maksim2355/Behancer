@@ -46,6 +46,5 @@
                 android:text="View user projects"/>
 
         </LinearLayout>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
