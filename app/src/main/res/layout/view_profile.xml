@@ -22,7 +22,7 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:contentDescription="@string/content_description_details"
-            tools:srcCompat="@{user.image}" />
+            tools:srcCompat="@{user.getImage}" />
 
         <TextView
             android:id="@+id/tv_display_name_details"

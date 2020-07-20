@@ -2,6 +2,9 @@ package com.elegion.test.behancer.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,18 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.RefreshOwner;
 import com.elegion.test.behancer.data.Storage;
-import com.elegion.test.behancer.views.ProjectsView;
 
 
 public class UserProjectsFragment extends Fragment {
@@ -55,21 +51,15 @@ public class UserProjectsFragment extends Fragment {
         routing = (RoutingFragment) getActivity();
     }
 
-    @Override
-    protected SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(R.id.refreshUserProjects);
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) getActivity().setTitle(R.string.projects);
 
-        mProjectsAdapter = new ProjectsAdapter(null);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mProjectsAdapter);
-
-        onRefresh();
+//        mProjectsAdapter = new ProjectsAdapter(null);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        mRecyclerView.setAdapter(mProjectsAdapter);
     }
 
 
@@ -85,10 +75,6 @@ public class UserProjectsFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
-    public void onRefresh() {
-
-    }
 
 //    @Override
 //    public void onRefreshData() {

@@ -2,7 +2,7 @@
 
 
 <layout xmlns:bind="http://schemas.android.com/apk/res-auto"
-         xmlns:app="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/tools">
 
     <data class="ProfileBinding">
 
@@ -27,7 +27,7 @@
 
             <include
                 layout="@layout/view_profile"
-                app:user="@{ViewModelProfile.user}"
+                app:ViewModelProfile.user="@{ViewModelProfile.user}"
                 android:visibility="@{ViewModelProfile.isListVisible ? View.GONE : View.VISIBLE }"
                 />
 
