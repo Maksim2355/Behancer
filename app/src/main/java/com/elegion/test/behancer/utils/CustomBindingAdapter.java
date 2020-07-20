@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.data.model.user.Image;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -41,4 +42,5 @@ public class CustomBindingAdapter {
     public static void setDateInCorrectFormat(TextView textView, long createdOn){
         textView.setText(DateUtils.format(createdOn));
     }
+
 }

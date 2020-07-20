@@ -36,7 +36,7 @@ public class ProjectsListViewModel extends ViewModel {
     }
 
 
-    public void loadProjects(){
+    public void loadProjects() {
         mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess(mStorage::insertProjects)

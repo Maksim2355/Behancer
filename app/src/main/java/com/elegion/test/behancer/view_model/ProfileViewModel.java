@@ -28,36 +28,16 @@ public class ProfileViewModel extends ViewModel {
     private View.OnClickListener mOnBtnWorksListClickListener;
 
 
-
     private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = this::getProjects;
 
-    private void getProjects() {
-        mDisposable = ApiUtils.getApiService().getUserInfo(mUsername)
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess(mStorage::insertUser)
-                .onErrorReturn(throwable ->
-                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ?
-                                mStorage.getUser(mUsername) :
-                                null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> mIsLoading.set(true))
-                .doFinally(() -> mIsLoading.set(false))
-                .subscribe(
-                        response -> {
-                            mIsListVisible.set(true);
 
-                        },
-                        throwable -> mIsListVisible.set(false)
-                );
-    }
-
-
-    public ProfileViewModel(Storage mStorage, View.OnClickListener mOnBtnWorksListClickListener) {
+    public ProfileViewModel(Storage mStorage, View.OnClickListener mOnBtnWorksListClickListener, String username) {
         this.mStorage = mStorage;
         this.mOnBtnWorksListClickListener = mOnBtnWorksListClickListener;
+        this.mUsername = username;
     }
 
-    public void getProjects(String mUsername){
+    public void getProjects() {
         mDisposable = ApiUtils.getApiService().getUserInfo(mUsername)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(mStorage::insertUser)
@@ -71,7 +51,8 @@ public class ProfileViewModel extends ViewModel {
                 .subscribe(
                         response -> {
                             mIsListVisible.set(true);
-
+                            System.out.println(response.getUser().toString());
+                            mUser = response.getUser();
                         },
                         throwable -> mIsListVisible.set(false)
                 );

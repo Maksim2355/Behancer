@@ -8,4 +8,5 @@
 
     <string name="label_fr_projects">Projects Fragment</string>
     <string name="label_fr_profile">Profile Fragment</string>
+    <string name="view_user_projects">View user projects</string>
 </resources>

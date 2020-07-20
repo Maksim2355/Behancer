@@ -7,7 +7,6 @@
         <variable
             name="user"
             type="com.elegion.test.behancer.data.model.user.User" />
-
     </data>
 
     <RelativeLayout
@@ -22,7 +21,7 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:contentDescription="@string/content_description_details"
-            tools:srcCompat="@{user.getImage}" />
+            bind:imageUrl="@{user.image.photoUrl}" />
 
         <TextView
             android:id="@+id/tv_display_name_details"

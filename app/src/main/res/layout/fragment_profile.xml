@@ -2,7 +2,9 @@
 
 
 <layout xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <data class="ProfileBinding">
 
@@ -13,7 +15,6 @@
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refresherProfile"
         bind:refreshState="@{ViewModelProfile.isLoading}"
         bind:onRefreshListener="@{ViewModelProfile.onRefreshListener}"
@@ -27,8 +28,8 @@
 
             <include
                 layout="@layout/view_profile"
-                app:ViewModelProfile.user="@{ViewModelProfile.user}"
-                android:visibility="@{ViewModelProfile.isListVisible ? View.GONE : View.VISIBLE }"
+                app:user="@{ViewModelProfile.user}"
+                android:visibility="@{ViewModelProfile.isListVisible ? View.VISIBLE : View.GONE }"
                 />
 
             <include
@@ -42,8 +43,9 @@
                 android:background="@color/colorPrimary"
                 android:layout_margin="8dp"
                 android:textColor="#FFFFFF"
-                android:onClick="@{() -> ViewModelProfile.onBtnWorksListClickListener}"
-                android:text="View user projects"/>
+                android:onClick="@{ViewModelProfile.onBtnWorksListClickListener}"
+                android:text="@string/view_user_projects"
+                />
 
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
