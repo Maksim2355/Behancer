@@ -25,8 +25,8 @@ public class ProfileFragment extends Fragment {
 
     private Storage mStorage;
     private RoutingFragment mRouting;
-
     private String mUsername;
+
     private Button.OnClickListener mOnBtnWorksListClickListener = v -> {
         Bundle bundle = new Bundle();
         bundle.putString("USER", mUsername);
