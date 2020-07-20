@@ -33,7 +33,6 @@ public class ProfileFragment extends Fragment {
         mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
     };
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
