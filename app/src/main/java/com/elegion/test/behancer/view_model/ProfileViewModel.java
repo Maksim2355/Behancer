@@ -3,6 +3,7 @@ package com.elegion.test.behancer.view_model;
 import android.view.View;
 
 import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -22,9 +23,9 @@ public class ProfileViewModel extends ViewModel {
 
 
     private ObservableBoolean mIsLoading = new ObservableBoolean(false);
-    private ObservableBoolean mIsListVisible = new ObservableBoolean(false);
+    private ObservableBoolean mIsListVisible = new ObservableBoolean(true);
 
-    private User mUser;
+    private ObservableField<User> mUser = new ObservableField<>();
     private View.OnClickListener mOnBtnWorksListClickListener;
 
 
@@ -51,11 +52,9 @@ public class ProfileViewModel extends ViewModel {
                 .subscribe(
                         response -> {
                             mIsListVisible.set(true);
-                            System.out.println(response.getUser().toString());
-                            mUser = response.getUser();
+                            mUser.set(response.getUser());
                         },
-                        throwable -> mIsListVisible.set(false)
-                );
+                        throwable -> mIsListVisible.set(false));
     }
 
 
@@ -68,7 +67,8 @@ public class ProfileViewModel extends ViewModel {
         return mIsListVisible;
     }
 
-    public User getUser() {
+    public ObservableField<User> getUser()
+    {
         return mUser;
     }
 

@@ -19,7 +19,7 @@ public class CustomBindingAdapter {
 
     @BindingAdapter("bind:imageUrl")
     public static void loadImage(ImageView imageView, String urlImage){
-        Picasso.with(imageView.getContext()).load(urlImage).into(imageView);
+        Picasso.with(imageView.getContext()).load(urlImage).transform(new CircleTransform()).into(imageView);
     }
 
     @BindingAdapter({"bind:data", "bind:clickHandler"})
