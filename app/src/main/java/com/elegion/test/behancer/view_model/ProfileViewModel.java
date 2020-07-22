@@ -2,43 +2,30 @@ package com.elegion.test.behancer.view_model;
 
 import android.view.View;
 
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.elegion.test.behancer.common.BaseViewModel;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.utils.ApiUtils;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProfileViewModel extends ViewModel {
+public class ProfileViewModel extends BaseViewModel {
 
-    private Disposable mDisposable;
-    private Storage mStorage;
-    private String mUsername;
-
-
-    private ObservableBoolean mIsLoading = new ObservableBoolean(false);
-    private ObservableBoolean mIsListVisible = new ObservableBoolean(true);
-
-    private ObservableField<User> mUser = new ObservableField<>();
+    private MutableLiveData<User> mUser = new MutableLiveData<>();
     private View.OnClickListener mOnBtnWorksListClickListener;
-
-
-    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = this::getProjects;
 
 
     public ProfileViewModel(Storage mStorage, View.OnClickListener mOnBtnWorksListClickListener, String username) {
         this.mStorage = mStorage;
         this.mOnBtnWorksListClickListener = mOnBtnWorksListClickListener;
-        this.mUsername = username;
     }
 
-    public void getProjects() {
+    @Override
+    public void update() {
         mDisposable = ApiUtils.getApiService().getUserInfo(mUsername)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(mStorage::insertUser)
@@ -47,27 +34,17 @@ public class ProfileViewModel extends ViewModel {
                                 mStorage.getUser(mUsername) :
                                 null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> mIsLoading.set(true))
-                .doFinally(() -> mIsLoading.set(false))
+                .doOnSubscribe(disposable -> mIsLoading.postValue(true))
+                .doFinally(() -> mIsLoading.postValue(false))
                 .subscribe(
                         response -> {
-                            mIsListVisible.set(true);
-                            mUser.set(response.getUser());
+                            mIsListVisible.postValue(true);
+                            mUser.postValue(response.getUser());
                         },
-                        throwable -> mIsListVisible.set(false));
+                        throwable -> mIsListVisible.postValue(false));
     }
 
-
-
-    public ObservableBoolean getIsLoading() {
-        return mIsLoading;
-    }
-
-    public ObservableBoolean getIsListVisible() {
-        return mIsListVisible;
-    }
-
-    public ObservableField<User> getUser()
+    public MutableLiveData<User> getUser()
     {
         return mUser;
     }
@@ -76,12 +53,4 @@ public class ProfileViewModel extends ViewModel {
         return mOnBtnWorksListClickListener;
     }
 
-    public SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
-        return mOnRefreshListener;
-    }
-
-    public void dispatchDetach(){
-        mStorage = null;
-        mDisposable = null;
-    }
 }

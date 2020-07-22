@@ -32,7 +32,6 @@ public class ProjectsFragment extends Fragment {
 
 
 
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -48,23 +47,9 @@ public class ProjectsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ProjectsListBinding binding = ProjectsListBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(this);
         binding.setViewModelProjectsList(mProjectsListViewModel);
         return binding.getRoot();
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) { getActivity().setTitle(R.string.projects); }
-        mProjectsListViewModel.loadProjects();
-    }
-
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mProjectsListViewModel.dispatchDetach();
-    }
 }

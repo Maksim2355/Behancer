@@ -1,31 +1,24 @@
 package com.elegion.test.behancer.view_model;
 
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableBoolean;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
+import com.elegion.test.behancer.common.BaseViewModel;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.utils.ApiUtils;
 
+import java.util.List;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProjectsListViewModel extends ViewModel {
+public class ProjectsListViewModel extends BaseViewModel {
 
-    private Disposable mDisposable;
-    private Storage mStorage;
 
-    private ObservableBoolean mIsLoading = new ObservableBoolean(false);
-    private ObservableBoolean mIsListVisible = new ObservableBoolean(false);
-    private ObservableArrayList<Project> mProjects = new ObservableArrayList<>();
-
-    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = this::loadProjects;
-
+    private MutableLiveData<List<Project>> mProjects = new MutableLiveData<>();
 
     private ProjectsAdapter.OnItemClickListener mOnItemClickListener;
 
@@ -36,47 +29,26 @@ public class ProjectsListViewModel extends ViewModel {
     }
 
 
-    public void loadProjects() {
+    @Override
+    protected SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
+        return this::update;
+    }
+
+    @Override
+    public void update() {
         mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSuccess(mStorage::insertProjects)
-                        .onErrorReturn(throwable ->
-                                ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(disposable -> mIsLoading.set(true))
-                        .doFinally(() -> mIsLoading.set(false))
-                        .subscribe(
-                                response -> {
-                                    mIsListVisible.set(true);
-                                    mProjects.addAll(response.getProjects());
-                                },
-                                throwable -> mIsListVisible.set(false));
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess(mStorage::insertProjects)
+                .onErrorReturn(throwable ->
+                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> mIsLoading.postValue(true))
+                .doFinally(() -> mIsLoading.postValue(false))
+                .subscribe(
+                        response -> {
+                            mIsListVisible.postValue(true);
+                            mProjects.postValue(response.getProjects());
+                        },
+                        throwable -> mIsListVisible.postValue(false));
     }
-
-    public ObservableBoolean getIsLoading() {
-        return mIsLoading;
-    }
-
-    public ObservableBoolean getIsListVisible() {
-        return mIsListVisible;
-    }
-
-    public ObservableArrayList<Project> getProjects() {
-        return mProjects;
-    }
-
-    public ProjectsAdapter.OnItemClickListener getOnItemClickListener() {
-        return mOnItemClickListener;
-    }
-
-    public SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
-        return mOnRefreshListener;
-    }
-
-
-    public void dispatchDetach(){
-        mStorage = null;
-        mDisposable = null;
-    }
-
 }
