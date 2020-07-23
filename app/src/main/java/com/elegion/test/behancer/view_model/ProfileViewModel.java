@@ -3,9 +3,8 @@ package com.elegion.test.behancer.view_model;
 import android.view.View;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.elegion.test.behancer.common.BaseViewModel;
+import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.utils.ApiUtils;
@@ -13,15 +12,18 @@ import com.elegion.test.behancer.utils.ApiUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProfileViewModel extends BaseViewModel {
+public class ProfileViewModel extends BaseRefreshViewModel {
 
     private MutableLiveData<User> mUser = new MutableLiveData<>();
     private View.OnClickListener mOnBtnWorksListClickListener;
+    private String mUsername;
 
 
     public ProfileViewModel(Storage mStorage, View.OnClickListener mOnBtnWorksListClickListener, String username) {
         this.mStorage = mStorage;
         this.mOnBtnWorksListClickListener = mOnBtnWorksListClickListener;
+        this.mUsername = username;
+        update();
     }
 
     @Override

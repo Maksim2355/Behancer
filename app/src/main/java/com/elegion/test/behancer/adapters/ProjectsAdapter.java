@@ -41,7 +41,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @Override
     public int getItemCount() {
-        return mProjects.size();
+        return (mProjects == null) ? 0 : mProjects.size();
     }
 
     public interface OnItemClickListener {

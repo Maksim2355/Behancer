@@ -10,11 +10,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.databinding.ProfileBinding;
+import com.elegion.test.behancer.utils.BaseRefreshViewModelFactory;
 import com.elegion.test.behancer.view_model.ProfileViewModel;
 
 
@@ -24,26 +26,26 @@ public class ProfileFragment extends Fragment {
 
     private ProfileViewModel mProfileViewModel;
 
-    private Storage mStorage;
     private RoutingFragment mRouting;
     private String mUsername;
 
     private Button.OnClickListener mOnBtnWorksListClickListener = v -> {
         Bundle bundle = new Bundle();
-        bundle.putString("USER", mUsername);
+        bundle.putString(USERNAME, mUsername);
         mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
     };
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Storage.StorageOwner) {
-            mStorage = ((Storage.StorageOwner) context).obtainStorage();
-            mRouting = (RoutingFragment)getActivity();
-        }
-        if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
-        if (getActivity() != null) getActivity().setTitle(mUsername);
-        mProfileViewModel = new ProfileViewModel(mStorage, mOnBtnWorksListClickListener, mUsername);
+        Storage storage = ((Storage.StorageOwner) context).obtainStorage();
+        mRouting = (RoutingFragment) getActivity();
+
+        assert getArguments() != null;
+        mUsername = getArguments().getString(USERNAME);
+
+        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(storage, mOnBtnWorksListClickListener, mUsername);
+        mProfileViewModel = ViewModelProviders.of(this, factory).get(ProfileViewModel.class);
     }
 
     @Nullable
@@ -52,19 +54,9 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         ProfileBinding binding = ProfileBinding.inflate(inflater, container, false);
         binding.setViewModelProfile(mProfileViewModel);
+        binding.setLifecycleOwner(this);
+        getActivity().setTitle(mUsername);
         return binding.getRoot();
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mProfileViewModel.getProjects();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mProfileViewModel.dispatchDetach();
-    }
 }

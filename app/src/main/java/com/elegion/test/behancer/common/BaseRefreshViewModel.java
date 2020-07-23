@@ -9,7 +9,7 @@ import com.elegion.test.behancer.data.Storage;
 
 import io.reactivex.disposables.Disposable;
 
-public abstract class BaseViewModel extends ViewModel {
+public abstract class BaseRefreshViewModel extends ViewModel {
 
     protected Storage mStorage;
     protected Disposable mDisposable;

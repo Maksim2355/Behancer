@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.databinding.ProjectsListBinding;
+import com.elegion.test.behancer.utils.BaseRefreshViewModelFactory;
 import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 
 
@@ -36,19 +38,20 @@ public class ProjectsFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         routing = (RoutingFragment) getActivity();
-        if (context instanceof Storage.StorageOwner) {
-            Storage storage = ((Storage.StorageOwner) context).obtainStorage();
-            mProjectsListViewModel = new ProjectsListViewModel(storage, mOnItemClickListener);
-        }
+        Storage storage = ((Storage.StorageOwner) context).obtainStorage();
+
+        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(storage, mOnItemClickListener);
+        mProjectsListViewModel = ViewModelProviders.of(this, factory).get(ProjectsListViewModel.class);
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ProjectsListBinding binding = ProjectsListBinding.inflate(inflater, container, false);
-        binding.setLifecycleOwner(this);
         binding.setViewModelProjectsList(mProjectsListViewModel);
+        binding.setLifecycleOwner(this);
+        getActivity().setTitle("Projects");
         return binding.getRoot();
     }
 

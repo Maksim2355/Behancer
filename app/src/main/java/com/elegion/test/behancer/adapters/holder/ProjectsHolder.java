@@ -28,7 +28,7 @@ public class ProjectsHolder extends RecyclerView.ViewHolder {
 
     public void bind(Project item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
         mBinding.setProjectsItem(new ProjectsItemViewModel(item));
-        mBinding.setOnItemClickListener(onItemClickListener);
+        if (onItemClickListener != null) mBinding.setOnItemClickListener(onItemClickListener);
         mBinding.executePendingBindings();
     }
 }

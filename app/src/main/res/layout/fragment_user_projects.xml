@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.UserProjectsFragment">
 
     <data class = "UserProjectsBinding">
-
+        <import type="android.view.View" alias="view"/>
+        <variable
+            name="userProjectsViewModel"
+            type="com.elegion.test.behancer.view_model.UserProjectsViewModel" />
 
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshUserProjects"
         android:layout_width="match_parent"
+        bind:refreshState="@{userProjectsViewModel.isLoading}"
+        bind:onRefreshListener="@{userProjectsViewModel.onRefreshListener}"
         android:layout_height="match_parent">
+
         <LinearLayout
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.UserProjectsFragment"
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
+                bind:data="@{userProjectsViewModel.projectsUser}"
+                bind:clickHandler="@{null}"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:visibility="@{userProjectsViewModel.isListVisible ? view.VISIBLE : view.GONE }" />
 
             <include
                 layout="@layout/view_error"
-                android:visibility="gone" />
+                android:visibility="@{userProjectsViewModel.isListVisible ? view.GONE : view.VISIBLE }" />
 
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
