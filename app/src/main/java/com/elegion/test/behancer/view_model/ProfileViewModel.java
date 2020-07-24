@@ -15,16 +15,20 @@ import io.reactivex.schedulers.Schedulers;
 public class ProfileViewModel extends BaseRefreshViewModel {
 
     private MutableLiveData<User> mUser = new MutableLiveData<>();
-    private View.OnClickListener mOnBtnWorksListClickListener;
+
+    private MutableLiveData<Boolean> mIsGoUserProjects = new MutableLiveData<>(false);
+    private View.OnClickListener mOnBtnWorksListClickListener = v -> {mIsGoUserProjects.postValue(true);};
+
+
     private String mUsername;
 
 
-    public ProfileViewModel(Storage mStorage, View.OnClickListener mOnBtnWorksListClickListener, String username) {
-        this.mStorage = mStorage;
-        this.mOnBtnWorksListClickListener = mOnBtnWorksListClickListener;
-        this.mUsername = username;
+    public ProfileViewModel(Storage storage, String username) {
+        mStorage = storage;
+        mUsername = username;
         update();
     }
+
 
     @Override
     public void update() {
@@ -46,6 +50,7 @@ public class ProfileViewModel extends BaseRefreshViewModel {
                         throwable -> mIsListVisible.postValue(false));
     }
 
+
     public MutableLiveData<User> getUser()
     {
         return mUser;
@@ -53,6 +58,10 @@ public class ProfileViewModel extends BaseRefreshViewModel {
 
     public View.OnClickListener getOnBtnWorksListClickListener() {
         return mOnBtnWorksListClickListener;
+    }
+
+    public MutableLiveData<Boolean> getIsGoUserProjects() {
+        return mIsGoUserProjects;
     }
 
 }

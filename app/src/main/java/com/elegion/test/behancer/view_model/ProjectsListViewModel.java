@@ -1,7 +1,7 @@
 package com.elegion.test.behancer.view_model;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
@@ -20,12 +20,13 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     private MutableLiveData<List<Project>> mProjects = new MutableLiveData<>();
 
-    private ProjectsAdapter.OnItemClickListener mOnItemClickListener;
+    private final MutableLiveData<String> mUsername = new MutableLiveData<>();
+
+    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = mUsername::postValue;
 
 
-    public ProjectsListViewModel(Storage storage, ProjectsAdapter.OnItemClickListener onItemClickListener){
+    public ProjectsListViewModel(Storage storage){
         mStorage = storage;
-        mOnItemClickListener = onItemClickListener;
         update();
     }
 
@@ -46,6 +47,10 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
                             mProjects.postValue(response.getProjects());
                         },
                         throwable -> mIsListVisible.postValue(false));
+    }
+
+    public LiveData<String> getUserClick() {
+        return mUsername;
     }
 
     public MutableLiveData<List<Project>> getProjects() {

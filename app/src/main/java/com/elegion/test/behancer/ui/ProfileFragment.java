@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.elegion.test.behancer.Navigation.RoutingFragment;
@@ -29,23 +30,18 @@ public class ProfileFragment extends Fragment {
     private RoutingFragment mRouting;
     private String mUsername;
 
-    private Button.OnClickListener mOnBtnWorksListClickListener = v -> {
-        Bundle bundle = new Bundle();
-        bundle.putString(USERNAME, mUsername);
-        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
-    };
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Storage storage = ((Storage.StorageOwner) context).obtainStorage();
-        mRouting = (RoutingFragment) getActivity();
+        mRouting = (RoutingFragment) context;
 
-        assert getArguments() != null;
-        mUsername = getArguments().getString(USERNAME);
-
-        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(storage, mOnBtnWorksListClickListener, mUsername);
+        if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
+        else mUsername = "";
+        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(storage, mUsername);
         mProfileViewModel = ViewModelProviders.of(this, factory).get(ProfileViewModel.class);
+
     }
 
     @Nullable
@@ -59,4 +55,15 @@ public class ProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mProfileViewModel.getIsGoUserProjects().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean){
+                Bundle bundle = new Bundle();
+                bundle.putString(USERNAME, mUsername);
+                mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
+            }
+        });
+    }
 }

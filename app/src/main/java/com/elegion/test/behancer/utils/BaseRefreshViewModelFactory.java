@@ -31,21 +31,15 @@ public class BaseRefreshViewModelFactory extends ViewModelProvider.NewInstanceFa
     private Button.OnClickListener mOnBtnClickListener;
     private String mUsername;
 
-    public BaseRefreshViewModelFactory(Storage storage, ProjectsAdapter.OnItemClickListener mOnItemClickListener) {
+    public BaseRefreshViewModelFactory(Storage storage) {
         this.mStorage = storage;
-        this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public BaseRefreshViewModelFactory(Storage storage, View.OnClickListener onBtnListClickListener, String username) {
+    public BaseRefreshViewModelFactory(Storage storage, String username) {
         this.mStorage = storage;
-        this.mOnBtnClickListener = onBtnListClickListener;
         this.mUsername = username;
     }
 
-    public BaseRefreshViewModelFactory(Storage storage, String mUsername) {
-        this.mStorage = storage;
-        this.mUsername = mUsername;
-    }
 
     //TODO() Сделать нормальный кейс и решить проблему с выходным значением default
     @NonNull
@@ -54,11 +48,11 @@ public class BaseRefreshViewModelFactory extends ViewModelProvider.NewInstanceFa
         String simpleName = modelClass.getSimpleName();
         switch (simpleName){
             case ChildBaseRefreshViewModels.PROFILE_VIEW_MODEL_NAME: {
-                return (T) new ProfileViewModel(mStorage, mOnBtnClickListener, mUsername);
+                return (T) new ProfileViewModel(mStorage, mUsername);
             }case ChildBaseRefreshViewModels.PROJECTS_VIEW_MODEL_NAME: {
-                return (T) new ProjectsListViewModel(mStorage, mOnItemClickListener);
+                return (T) new ProjectsListViewModel(mStorage);
             }
-            default: return (T) new UserProjectsViewModel(mStorage, mUsername);
+            default:return (T) new UserProjectsViewModel(mStorage, mUsername);
 
         }
     }

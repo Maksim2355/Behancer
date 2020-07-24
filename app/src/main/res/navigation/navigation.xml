@@ -2,10 +2,9 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/projectsFragment"
-    tools:ignore="UnusedNavigation">
+    >
 
     <fragment
         android:id="@+id/projectsFragment"
@@ -27,5 +26,5 @@
         android:id="@+id/userProjectsFragment"
         android:name="com.elegion.test.behancer.ui.UserProjectsFragment"
         android:label="fragment_user_projects"
-        tools:layout="@layout/fragment_user_projects" />
+        />
 </navigation>
