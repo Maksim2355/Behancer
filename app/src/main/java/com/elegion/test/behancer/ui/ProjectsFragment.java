@@ -53,11 +53,13 @@ public class ProjectsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         mProjectsListViewModel.getUserClick()
-                .observe(getViewLifecycleOwner(),
-                        s -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, s);
-            mRoutingFragment.startScreen(R.id.profileFragment, bundle);
+                .observe(getViewLifecycleOwner(), s -> {
+                    if (!s.equals("")){
+                        mProjectsListViewModel.dispatchUsername();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(USERNAME, s);
+                        mRoutingFragment.startScreen(R.id.profileFragment, bundle);
+                    }
         });
         super.onActivityCreated(savedInstanceState);
     }

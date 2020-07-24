@@ -51,6 +51,10 @@ public class ProfileViewModel extends BaseRefreshViewModel {
     }
 
 
+    public void dispatchIsGoUserProjectsFragment(){
+        mIsGoUserProjects.postValue(false);
+    }
+
     public MutableLiveData<User> getUser()
     {
         return mUser;

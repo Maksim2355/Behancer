@@ -58,12 +58,14 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mProfileViewModel.getIsGoUserProjects().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean){
-                Bundle bundle = new Bundle();
-                bundle.putString(USERNAME, mUsername);
-                mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
-            }
+        mProfileViewModel.getIsGoUserProjects().observe(getViewLifecycleOwner(),
+                aBoolean -> {
+                    if (aBoolean){
+                        mProfileViewModel.dispatchIsGoUserProjectsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(USERNAME, mUsername);
+                        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
+                    }
         });
     }
 }

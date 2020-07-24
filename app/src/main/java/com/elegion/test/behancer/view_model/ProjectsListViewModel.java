@@ -20,9 +20,9 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     private MutableLiveData<List<Project>> mProjects = new MutableLiveData<>();
 
-    private final MutableLiveData<String> mUsername = new MutableLiveData<>();
+    private MutableLiveData<String> mUsername = new MutableLiveData<>();
 
-    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = mUsername::postValue;
+    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = username -> mUsername.postValue(username);
 
 
     public ProjectsListViewModel(Storage storage){
@@ -51,6 +51,10 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     public LiveData<String> getUserClick() {
         return mUsername;
+    }
+
+    public void dispatchUsername(){
+        mUsername.postValue("");
     }
 
     public MutableLiveData<List<Project>> getProjects() {
