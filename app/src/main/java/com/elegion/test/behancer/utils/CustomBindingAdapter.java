@@ -4,13 +4,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.data.model.project.Project;
-import com.elegion.test.behancer.data.model.user.Image;
+import com.elegion.test.behancer.data.model.custom_projects.ProjectLive;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,9 +23,11 @@ public class CustomBindingAdapter {
     }
 
     @BindingAdapter({"bind:data", "bind:clickHandler"})
-    public static void configureRecyclerView(RecyclerView recyclerView, List<Project> listProjects,
+    public static void configureRecyclerView(RecyclerView recyclerView, PagedList<ProjectLive> listProjects,
                                              ProjectsAdapter.OnItemClickListener onItemClickListener){
-        ProjectsAdapter projectsAdapter = new ProjectsAdapter(listProjects, onItemClickListener);
+        ProjectsAdapter projectsAdapter = new ProjectsAdapter(onItemClickListener);
+        projectsAdapter.submitList(listProjects);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(projectsAdapter);
     }

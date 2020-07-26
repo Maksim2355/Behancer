@@ -2,31 +2,34 @@ package com.elegion.test.behancer.view_model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.PagedList;
 
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
-import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.data.model.custom_projects.ProjectLive;
+import com.elegion.test.behancer.data.model.project.ProjectResponse;
 import com.elegion.test.behancer.utils.ApiUtils;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProjectsListViewModel extends BaseRefreshViewModel {
 
-
-    private MutableLiveData<List<Project>> mProjects = new MutableLiveData<>();
+    private LiveData<PagedList<ProjectLive>> mProjects;
 
     private MutableLiveData<String> mUsername = new MutableLiveData<>();
 
-    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = username -> mUsername.postValue(username);
+    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = username -> {
+        if (username != null) mUsername.postValue(username);
+    };
 
 
     public ProjectsListViewModel(Storage storage){
         mStorage = storage;
+        mProjects = storage.getProjectsPaged();
         update();
     }
 
@@ -34,20 +37,24 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
     @Override
     public void update() {
         mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess(mStorage::insertProjects)
-                .onErrorReturn(throwable ->
-                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
-                .observeOn(AndroidSchedulers.mainThread())
+                .map(ProjectResponse::getProjects)
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
+                .doOnSuccess(response -> mIsListVisible.postValue(true))
+                .subscribeOn(Schedulers.io())
                 .subscribe(
                         response -> {
-                            mIsListVisible.postValue(true);
-                            mProjects.postValue(response.getProjects());
+                            mStorage.insertProjects(response);
                         },
-                        throwable -> mIsListVisible.postValue(false));
+                        throwable -> {
+                            mIsListVisible.postValue(false);
+                            List<ProjectLive> value = mProjects.getValue();
+                            boolean state = (value == null) || (value.size() == 0);
+                            mIsListVisible.postValue(!state);
+                        });
     }
+
+
 
     public LiveData<String> getUserClick() {
         return mUsername;
@@ -57,7 +64,7 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
         mUsername.postValue("");
     }
 
-    public MutableLiveData<List<Project>> getProjects() {
+    public LiveData<PagedList<ProjectLive>> getProjects() {
         return mProjects;
     }
 

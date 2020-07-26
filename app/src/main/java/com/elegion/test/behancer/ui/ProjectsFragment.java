@@ -23,7 +23,6 @@ public class ProjectsFragment extends Fragment {
 
     public static final String USERNAME = "USERNAME";
 
-
     private ProjectsListViewModel mProjectsListViewModel;
 
     private RoutingFragment mRoutingFragment;
@@ -58,7 +57,7 @@ public class ProjectsFragment extends Fragment {
                         mProjectsListViewModel.dispatchUsername();
                         Bundle bundle = new Bundle();
                         bundle.putString(USERNAME, s);
-                        mRoutingFragment.startScreen(R.id.profileFragment, bundle);
+                        mRoutingFragment.startScreen(R.id.action_projectsFragment_to_profileFragment, bundle);
                     }
         });
         super.onActivityCreated(savedInstanceState);

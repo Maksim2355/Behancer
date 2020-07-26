@@ -1,9 +1,12 @@
 package com.elegion.test.behancer.data;
 
-import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import com.elegion.test.behancer.data.database.BehanceDao;
-import com.elegion.test.behancer.data.model.project.Cover;
+import com.elegion.test.behancer.data.model.custom_projects.ProjectLive;
+import com.elegion.test.behancer.data.model.custom_user.UserLive;
 import com.elegion.test.behancer.data.model.project.Owner;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.data.model.project.ProjectResponse;
@@ -20,6 +23,7 @@ import java.util.List;
 
 public class Storage {
 
+    public static final int PAGE_SIZE = 30;
     private BehanceDao mBehanceDao;
 
     public Storage(BehanceDao behanceDao) {
@@ -27,50 +31,43 @@ public class Storage {
     }
 
     public void insertProjects(ProjectResponse response) {
-        List<Project> projects = response.getProjects();
-        mBehanceDao.insertProjects(projects);
-
-        Pair<List<Cover>, List<Owner>> assembled = assemble(projects);
-
-        mBehanceDao.clearCoverTable();
-        mBehanceDao.insertCovers(assembled.first);
-        mBehanceDao.clearOwnerTable();
-        mBehanceDao.insertOwners(assembled.second);
+        insertProjects(response.getProjects());
     }
 
-    private Pair<List<Cover>, List<Owner>> assemble(List<Project> projects) {
+    public LiveData<List<ProjectLive>> getProjectsLive(){
+        return mBehanceDao.getProjectsLive();
+    }
 
-        List<Cover> covers = new ArrayList<>();
+    private List<Owner> getOwners(List<Project> projects) {
         List<Owner> owners = new ArrayList<>();
         for (int i = 0; i < projects.size(); i++) {
-            Cover cover = projects.get(i).getCover();
-            cover.setId(i);
-            cover.setProjectId(projects.get(i).getId());
-            covers.add(cover);
-
             Owner owner = projects.get(i).getOwners().get(0);
             owner.setId(i);
             owner.setProjectId(projects.get(i).getId());
             owners.add(owner);
         }
-        return new Pair<>(covers, owners);
+        return owners;
+    }
+
+
+    public void insertProjects(List<Project> projects){
+        mBehanceDao.insertProjects(projects);
+        List<Owner> owners = getOwners(projects);
+        mBehanceDao.clearOwnerTable();
+        mBehanceDao.insertOwners(owners);
     }
 
     public ProjectResponse getProjects() {
         List<Project> projects = mBehanceDao.getProjects();
         for (Project project : projects) {
-            project.setCover(mBehanceDao.getCoverFromProject(project.getId()));
             project.setOwners(mBehanceDao.getOwnersFromProject(project.getId()));
         }
-
         ProjectResponse response = new ProjectResponse();
         response.setProjects(projects);
-
         return response;
     }
 
-    public void insertUser(UserResponse response) {
-        User user = response.getUser();
+    public void insertUser(User user) {
         Image image = user.getImage();
         image.setId(user.getId());
         image.setUserId(user.getId());
@@ -79,16 +76,28 @@ public class Storage {
         mBehanceDao.insertImage(image);
     }
 
+    public LiveData<UserLive> getUserLive(String username){
+        return mBehanceDao.getUserLiveByName(username);
+    }
+
+    public List<ProjectLive> getProjectLiveNoReactive(){
+        return mBehanceDao.getProjectsLiveNoReactive();
+    }
+
+    public LiveData<PagedList<ProjectLive>> getProjectsPaged(){
+        return new LivePagedListBuilder<>(mBehanceDao.getProjectsLivePaged(), PAGE_SIZE).build();
+    }
+
     public UserResponse getUser(String username) {
         User user = mBehanceDao.getUserByName(username);
         Image image = mBehanceDao.getImageFromUser(user.getId());
         user.setImage(image);
-
         UserResponse response = new UserResponse();
         response.setUser(user);
-
         return response;
     }
+
+
 
     public interface StorageOwner {
         Storage obtainStorage();

@@ -1,10 +1,14 @@
 package com.elegion.test.behancer.data.database;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.elegion.test.behancer.data.model.custom_projects.ProjectLive;
+import com.elegion.test.behancer.data.model.custom_user.UserLive;
 import com.elegion.test.behancer.data.model.project.Cover;
 import com.elegion.test.behancer.data.model.project.Owner;
 import com.elegion.test.behancer.data.model.project.Project;
@@ -37,8 +41,17 @@ public interface BehanceDao {
     @Query("select * from project")
     List<Project> getProjects();
 
-    @Query("select * from cover where project_id = :projectId")
-    Cover getCoverFromProject(int projectId);
+    @Query("select * from project")
+    List<ProjectLive> getProjectsLiveNoReactive();
+
+    @Query("select * from project")
+    LiveData<List<ProjectLive>> getProjectsLive();
+
+    @Query("select * from project")
+    DataSource.Factory<Integer, ProjectLive> getProjectsLivePaged();
+
+    @Query("select * from user where username = :username")
+    LiveData<UserLive> getUserLiveByName(String username);
 
     @Query("select * from owner where project_id = :projectId")
     List<Owner> getOwnersFromProject(int projectId);
@@ -48,6 +61,7 @@ public interface BehanceDao {
 
     @Query("select * from image where user_id = :userId")
     Image getImageFromUser(int userId);
+
 
     @Query("delete from owner")
     void clearOwnerTable();

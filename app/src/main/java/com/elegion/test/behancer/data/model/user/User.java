@@ -10,9 +10,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-/**
- * Created by Vladislav Falzan.
- */
+
 @Entity
 public class User implements Serializable {
 

@@ -15,6 +15,7 @@ public class AppDelegate extends Application {
         super.onCreate();
 
         final BehanceDatabase database = Room.databaseBuilder(this, BehanceDatabase.class, "behance_database")
+                .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
 
