@@ -2,9 +2,6 @@ package com.elegion.test.behancer.data.model.user;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Vladislav Falzan.
- */
 
 public class UserResponse {
 

@@ -8,34 +8,23 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Vladislav Falzan.
- */
-@Entity(foreignKeys = @ForeignKey(
-        entity = User.class,
-        parentColumns = "id",
-        childColumns = "user_id"
-))
+
+@Entity
 public class Image {
 
-    @PrimaryKey
-    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "image_id")
     private int mId;
 
     @ColumnInfo(name = "photo_url")
     @SerializedName("230")
     private String mPhotoUrl;
 
-    @ColumnInfo(name = "user_id")
-    private int mUserId;
-
     public int getId() {
         return mId;
     }
 
-    public void setId(int id) {
-        mId = id;
-    }
+    public void setId(int id) { mId = id; }
 
     public String getPhotoUrl() {
         return mPhotoUrl;
@@ -45,11 +34,4 @@ public class Image {
         mPhotoUrl = photoUrl;
     }
 
-    public int getUserId() {
-        return mUserId;
-    }
-
-    public void setUserId(int userId) {
-        mUserId = userId;
-    }
 }

@@ -1,7 +1,8 @@
 package com.elegion.test.behancer.view_model;
 
 import androidx.lifecycle.ViewModel;
-import com.elegion.test.behancer.data.model.project.Project;
+
+import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.utils.DateUtils;
 
 public class ProjectsItemViewModel extends ViewModel {
@@ -13,11 +14,11 @@ public class ProjectsItemViewModel extends ViewModel {
     private String mUsername;
     private String mPublishedOn;
 
-    public ProjectsItemViewModel(Project project) {
-        this.mImageUrl = project.getCover().getPhotoUrl();
-        this.mName = project.getName();
-        this.mUsername = project.getOwners().get(FIRST_OWNER_INDEX).getUsername();
-        this.mPublishedOn = DateUtils.format(project.getPublishedOn());
+    public ProjectsItemViewModel(ProjectLive project) {
+        this.mImageUrl = project.getProject().getCover().getPhotoUrl();
+        this.mName = project.getProject().getName();
+        if (project.getOwners().size() != 0) this.mUsername = project.getOwners().get(FIRST_OWNER_INDEX).getUsername();
+        this.mPublishedOn = DateUtils.format(project.getProject().getPublishedOn());
     }
 
 

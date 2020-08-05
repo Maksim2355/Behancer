@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
+import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.databinding.ProjectItemBinding;
 import com.elegion.test.behancer.utils.DateUtils;
@@ -22,7 +23,7 @@ public class ProjectsHolder extends RecyclerView.ViewHolder {
         mBinding = itemBinding;
     }
 
-    public void bind(Project item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
+    public void bind(ProjectLive item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
         mBinding.setProjectsItem(new ProjectsItemViewModel(item));
         if (onItemClickListener != null) mBinding.setOnItemClickListener(onItemClickListener);
         mBinding.executePendingBindings();

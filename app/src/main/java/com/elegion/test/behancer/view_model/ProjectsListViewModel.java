@@ -7,7 +7,10 @@ import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.data.model.project.ProjectResponse;
+import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.utils.ApiUtils;
 
 import java.util.List;
@@ -18,7 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ProjectsListViewModel extends BaseRefreshViewModel {
 
 
-    private MutableLiveData<List<Project>> mProjects = new MutableLiveData<>();
+    private LiveData<List<ProjectLive>> mProjects;
 
     private MutableLiveData<String> mUsername = new MutableLiveData<>();
 
@@ -27,6 +30,7 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     public ProjectsListViewModel(Storage storage){
         mStorage = storage;
+        mProjects = storage.getProjectLive();
         update();
     }
 
@@ -34,19 +38,20 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
     @Override
     public void update() {
         mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess(mStorage::insertProjects)
-                .onErrorReturn(throwable ->
-                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
-                .observeOn(AndroidSchedulers.mainThread())
+                .map(ProjectResponse::getProjects)
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
+                .doOnSuccess(projects -> mIsListVisible.postValue(true))
+                .subscribeOn(Schedulers.io())
                 .subscribe(
                         response -> {
-                            mIsListVisible.postValue(true);
-                            mProjects.postValue(response.getProjects());
+                            mStorage.insertProjects(response);
                         },
-                        throwable -> mIsListVisible.postValue(false));
+                        throwable -> {
+                            mIsListVisible.postValue(false);
+                            List<ProjectLive> projects = mProjects.getValue();
+                            if((projects != null) && (projects.size() != 0)) mIsListVisible.postValue(true);
+                        });
     }
 
     public LiveData<String> getUserClick() {
@@ -57,7 +62,7 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
         mUsername.postValue("");
     }
 
-    public MutableLiveData<List<Project>> getProjects() {
+    public LiveData<List<ProjectLive>> getProjects() {
         return mProjects;
     }
 

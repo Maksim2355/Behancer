@@ -1,6 +1,7 @@
 package com.elegion.test.behancer.data.model.project;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -11,9 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Vladislav Falzan.
- */
+
 @Entity
 public class Project implements Serializable {
 
@@ -31,7 +30,7 @@ public class Project implements Serializable {
     private long mPublishedOn;
 
     @SerializedName("covers")
-    @Ignore
+    @Embedded
     private Cover mCover;
 
     @SerializedName("owners")

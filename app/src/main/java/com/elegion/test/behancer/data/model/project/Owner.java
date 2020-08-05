@@ -20,7 +20,7 @@ import java.io.Serializable;
 ))
 public class Owner implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int mId;
 

@@ -1,27 +1,26 @@
 package com.elegion.test.behancer.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.elegion.test.behancer.R;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.elegion.test.behancer.adapters.holder.ProjectsHolder;
-import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.databinding.ProjectItemBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @NonNull
-    private final List<Project> mProjects;
-    private final OnItemClickListener mOnItemClickListener;
+    private List<ProjectLive> mProjects;
 
-    public ProjectsAdapter(List<Project> projects, OnItemClickListener onItemClickListener) {
+    private OnItemClickListener mOnItemClickListener;
+
+    public ProjectsAdapter(List<ProjectLive> projects, OnItemClickListener onItemClickListener) {
         mProjects = projects;
         mOnItemClickListener = onItemClickListener;
     }
@@ -35,7 +34,8 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ProjectsHolder holder, int position) {
-        Project project = mProjects.get(position);
+        ProjectLive project = mProjects.get(position);
+        System.out.println(project.getOwners().size());
         holder.bind(project, mOnItemClickListener);
     }
 

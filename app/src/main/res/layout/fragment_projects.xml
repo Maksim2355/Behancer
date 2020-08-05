@@ -27,6 +27,7 @@
                 android:layout_height="match_parent"
                 bind:clickHandler="@{ViewModelProjectsList.onItemClickListener}"
                 bind:data="@{ViewModelProjectsList.projects}"
+                bind:username="@{null}"
                 android:visibility="@{ViewModelProjectsList.isListVisible ? View.VISIBLE : View.GONE}"
                 />
             <include

@@ -1,6 +1,7 @@
 package com.elegion.test.behancer.data.model.user;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -33,13 +34,14 @@ public class User implements Serializable {
     @SerializedName("created_on")
     private long mCreatedOn;
 
-    @SerializedName("images")
-    @Ignore
-    private Image mImage;
-
     @ColumnInfo(name = "display_name")
     @SerializedName("display_name")
     private String mDisplayName;
+
+
+    @SerializedName("images")
+    @Embedded
+    private Image mImage;
 
     public int getId() {
         return mId;
