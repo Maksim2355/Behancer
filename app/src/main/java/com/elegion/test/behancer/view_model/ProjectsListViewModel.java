@@ -2,8 +2,10 @@ package com.elegion.test.behancer.view_model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.PagedList;
 
 import com.elegion.test.behancer.BuildConfig;
+import com.elegion.test.behancer.adapters.OnItemClickListener;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
@@ -21,16 +23,16 @@ import io.reactivex.schedulers.Schedulers;
 public class ProjectsListViewModel extends BaseRefreshViewModel {
 
 
-    private LiveData<List<ProjectLive>> mProjects;
+    private LiveData<PagedList<ProjectLive>> mProjects;
 
     private MutableLiveData<String> mUsername = new MutableLiveData<>();
 
-    private ProjectsAdapter.OnItemClickListener mOnItemClickListener = username -> mUsername.postValue(username);
+    private OnItemClickListener mOnItemClickListener = username -> mUsername.postValue(username);
 
 
     public ProjectsListViewModel(Storage storage){
         mStorage = storage;
-        mProjects = storage.getProjectLive();
+        mProjects = storage.getProjectsLivePaged();
         update();
     }
 
@@ -58,16 +60,17 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
         return mUsername;
     }
 
-    public void dispatchUsername(){
-        mUsername.postValue("");
-    }
 
-    public LiveData<List<ProjectLive>> getProjects() {
+    public LiveData<PagedList<ProjectLive>> getProjects() {
         return mProjects;
     }
 
-    public ProjectsAdapter.OnItemClickListener getOnItemClickListener() {
+    public OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
+    }
+
+    public void dispatchUsername(){
+        mUsername.postValue("");
     }
 
 }

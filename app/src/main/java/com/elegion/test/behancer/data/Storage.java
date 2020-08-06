@@ -1,6 +1,8 @@
 package com.elegion.test.behancer.data;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import com.elegion.test.behancer.data.database.BehanceDao;
 import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
@@ -22,6 +24,17 @@ public class Storage {
     public Storage(BehanceDao behanceDao) {
         mBehanceDao = behanceDao;
     }
+
+
+    public LiveData<PagedList<ProjectLive>> getProjectsLivePaged(){
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPageSize(30)
+                .build();
+        return new LivePagedListBuilder<>(mBehanceDao.getProjectLivePaged(), config).build();
+    }
+
+
 
     public LiveData<List<ProjectLive>> getProjectLive(){
         return mBehanceDao.getProjectLive();

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.elegion.test.behancer.adapters.OnItemClickListener;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
@@ -26,7 +27,7 @@ public class BaseRefreshViewModelFactory extends ViewModelProvider.NewInstanceFa
     }
 
     private Storage mStorage;
-    private ProjectsAdapter.OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener mOnItemClickListener;
 
     private Button.OnClickListener mOnBtnClickListener;
     private String mUsername;

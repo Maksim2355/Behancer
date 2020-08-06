@@ -1,18 +1,21 @@
 package com.elegion.test.behancer.utils;
 
+import android.os.Build;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.databinding.BindingAdapter;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.elegion.test.behancer.adapters.ProjectsAdapter;
+import com.elegion.test.behancer.adapters.OnItemClickListener;
+import com.elegion.test.behancer.adapters.ProjectsPagedAdapter;
 import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomBindingAdapter {
@@ -22,20 +25,19 @@ public class CustomBindingAdapter {
         Picasso.with(imageView.getContext()).load(urlImage).transform(new CircleTransform()).into(imageView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @BindingAdapter({"bind:data", "bind:clickHandler", "bind:username"})
-    public static void configureRecyclerView(RecyclerView recyclerView, List<ProjectLive> listProjects,
-                                             ProjectsAdapter.OnItemClickListener onItemClickListener, String username){
+    public static void configureRecyclerView(RecyclerView recyclerView, PagedList<ProjectLive> listProjects,
+                                             OnItemClickListener onItemClickListener, String username){
 
+        //Todo натворил фигню
         if ((username != null) && (listProjects != null)){
-            List<ProjectLive> tmpListProjects = new ArrayList<>();
-            for(int i = 0; i < listProjects.size(); i++){
-                if (listProjects.get(i).getOwners().get(0).getUsername().equals(username)){
-                    tmpListProjects.add(listProjects.get(i));
-                }
-            }
-            listProjects = tmpListProjects;
+
         }
-        ProjectsAdapter projectsAdapter = new ProjectsAdapter(listProjects, onItemClickListener);
+
+        ProjectsPagedAdapter projectsAdapter = new ProjectsPagedAdapter(onItemClickListener);
+        projectsAdapter.submitList(listProjects);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(projectsAdapter);
     }

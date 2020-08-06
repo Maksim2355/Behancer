@@ -1,6 +1,7 @@
 package com.elegion.test.behancer.data.database;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -32,6 +33,9 @@ public interface BehanceDao {
     LiveData<User> getUserLiveByName(String username);
 
     @Query("select * from project")
+    DataSource.Factory<Integer, ProjectLive> getProjectLivePaged();
+
+    @Query("select * from project")
     List<Project> getProjects();
 
     @Query("select * from owner where project_id = :projectId")
@@ -40,6 +44,4 @@ public interface BehanceDao {
     @Query("select * from user where username = :username")
     User getUserByName(String username);
 
-    @Query("delete from owner")
-    void clearOwnerTable();
 }

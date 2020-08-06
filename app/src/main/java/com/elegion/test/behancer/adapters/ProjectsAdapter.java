@@ -35,7 +35,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
     @Override
     public void onBindViewHolder(@NonNull ProjectsHolder holder, int position) {
         ProjectLive project = mProjects.get(position);
-        System.out.println(project.getOwners().size());
         holder.bind(project, mOnItemClickListener);
     }
 
@@ -44,7 +43,4 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
         return (mProjects == null) ? 0 : mProjects.size();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(String username);
-    }
 }

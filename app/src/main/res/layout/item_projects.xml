@@ -9,7 +9,7 @@
         
         <variable
             name="onItemClickListener"
-            type="com.elegion.test.behancer.adapters.ProjectsAdapter.OnItemClickListener" />
+            type="com.elegion.test.behancer.adapters.OnItemClickListener" />
         
     </data>
 
