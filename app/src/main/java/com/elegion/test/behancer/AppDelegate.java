@@ -54,12 +54,12 @@ public class AppDelegate extends Application {
         return instance;
     }
 
-    private void disabledReflection(){
+//    private void disabledReflection(){
 //        Toothpick.setConfiguration(Configuration.forProduction().disableReflection());
 //        MemberInjectorRegistryLocator.setRootRegistry(
 //                new com.elegion.test.behancer.MemberInjectorRegistry());
 //
 //        FactoryRegistryLocator.setRootRegistry(
 //                new com.elegion.test.behancer.FactoryRegistry());
-    }
+//    }
 }
