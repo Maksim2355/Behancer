@@ -6,44 +6,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.elegion.test.behancer.Navigation.RoutingFragment;
-import com.elegion.test.behancer.R;
-import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.common.BaseRefreshViewModel;
-import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.databinding.UserProjectsBinding;
-import com.elegion.test.behancer.utils.BaseRefreshViewModelFactory;
+import com.elegion.test.behancer.di.FragmentModule;
+import com.elegion.test.behancer.di.ScopeLifecycle;
+import com.elegion.test.behancer.di.TreeScope;
 import com.elegion.test.behancer.view_model.UserProjectsViewModel;
 
+import javax.inject.Inject;
 
-public class UserProjectsFragment extends Fragment {
+import toothpick.Scope;
+import toothpick.Toothpick;
+
+
+public class UserProjectsFragment extends Fragment implements ScopeLifecycle {
 
     public static final String USERNAME = "USERNAME";
+    public static final String ID_FRAGMENT = "_UserProjectsFragment";
 
-    private UserProjectsViewModel mUserProjectsViewModel;
-
+    @Inject
+    UserProjectsViewModel mUserProjectsViewModel;
 
     @Override
     public void onAttach(Context context) {
+        initScope();
         super.onAttach(context);
-        Storage storage = ((Storage.StorageOwner) context).obtainStorage();
-
-        String username = getArguments().getString(USERNAME);
-
-        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(storage, username);
-
-        mUserProjectsViewModel = ViewModelProviders.of(this, factory).get(UserProjectsViewModel.class);
-
+        String username;
+        if (getArguments() != null)username = getArguments().getString(USERNAME);
+        else username = "";
+        mUserProjectsViewModel.setUsername(username);
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,4 +48,15 @@ public class UserProjectsFragment extends Fragment {
     }
 
 
+    @Override
+    public void initScope() {
+        Scope frScope = Toothpick.openScopes(TreeScope.ACTIVITY_SCOPE, TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT)
+                .installModules(new FragmentModule(this));
+        Toothpick.inject(this, frScope);
+    }
+
+    @Override
+    public void closeScope() {
+        Toothpick.closeScope(TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT);
+    }
 }

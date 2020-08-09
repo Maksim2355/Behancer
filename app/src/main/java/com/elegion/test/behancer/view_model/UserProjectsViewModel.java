@@ -6,29 +6,41 @@ import androidx.paging.PagedList;
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.data.api.BehanceApi;
 import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.data.model.project.ProjectResponse;
 import com.elegion.test.behancer.utils.ApiUtils;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.schedulers.Schedulers;
 
 public class UserProjectsViewModel extends BaseRefreshViewModel {
 
     private LiveData<PagedList<ProjectLive>> mProjectsUser;
-    private String mUsername;
 
-    public UserProjectsViewModel(Storage storage, String username){
+    private String mUsername = "";
+
+    private BehanceApi mApi;
+
+    @Inject
+    public UserProjectsViewModel(Storage storage, BehanceApi api){
         mStorage = storage;
-        mUsername = username;
+        mApi = api;
         mProjectsUser = mStorage.getProjectsLivePaged();
+        update();
+    }
+
+    public void setUsername(String username){
+        mUsername = username;
         update();
     }
 
     @Override
     public void update() {
-        mDisposable = ApiUtils.getApiService().getUserProjectsInfo(mUsername)
+        if (!mUsername.equals("")) mDisposable = mApi.getUserProjectsInfo(mUsername)
                 .map(ProjectResponse::getProjects)
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))

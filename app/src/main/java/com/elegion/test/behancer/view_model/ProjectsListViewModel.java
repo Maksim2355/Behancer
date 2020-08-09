@@ -9,6 +9,7 @@ import com.elegion.test.behancer.adapters.OnItemClickListener;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BaseRefreshViewModel;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.data.api.BehanceApi;
 import com.elegion.test.behancer.data.model.custom_data.ProjectLive;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.data.model.project.ProjectResponse;
@@ -16,6 +17,8 @@ import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.utils.ApiUtils;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -29,9 +32,12 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     private OnItemClickListener mOnItemClickListener = username -> mUsername.postValue(username);
 
+    private BehanceApi mApi;
 
-    public ProjectsListViewModel(Storage storage){
+    @Inject
+    public ProjectsListViewModel(Storage storage, BehanceApi api){
         mStorage = storage;
+        mApi = api;
         mProjects = storage.getProjectsLivePaged();
         update();
     }
@@ -39,7 +45,7 @@ public class ProjectsListViewModel extends BaseRefreshViewModel {
 
     @Override
     public void update() {
-        mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
+        mDisposable = mApi.getProjects(BuildConfig.API_QUERY)
                 .map(ProjectResponse::getProjects)
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
