@@ -47,6 +47,11 @@ public class UserProjectsFragment extends Fragment implements ScopeLifecycle {
         return binding.getRoot();
     }
 
+    @Override
+    public void onDetach() {
+        closeScope();
+        super.onDetach();
+    }
 
     @Override
     public void initScope() {
